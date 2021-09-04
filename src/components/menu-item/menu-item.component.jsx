@@ -1,10 +1,15 @@
 import React from 'react';
 import './menu-item.styles.scss';
+// this is a higher order component (a function that takes
+// a component as an argument and returns a modified component)
+import { withRouter } from 'react-router-dom';
 
-const MenuItem = ({ title, imageUrl, size }) => (
+// here we can just add history and match because we are using withRouter, even when those are not sent from the caller component
+const MenuItem = ({ title, imageUrl, size, history, linkUrl, match }) => (
  <div
   // if size is null will pass as empty, no exceptions
   className={`${size} menu-item`}
+  onClick={() => history.push(`${match.url}${linkUrl}`)}
  >
   <div
    className="background-image"
@@ -21,4 +26,5 @@ const MenuItem = ({ title, imageUrl, size }) => (
  </div>
 );
 
-export default MenuItem;
+// with this we power up our component to have access to the things related to our router (history, match)
+export default withRouter(MenuItem);
