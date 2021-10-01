@@ -1,5 +1,16 @@
+@font-face {
+ font-family: 'Open Sans Condensed';
+ src: local('MyFont'),
+  url(./fonts/OpenSansCondensed-Light.ttf) format('truetype');
+}
+
 body {
  font-family: 'Open Sans Condensed';
 
  padding: 20px 60px;
+}
+
+a {
+ text-decoration: none;
+ color: black;
 }
