@@ -28,7 +28,7 @@ class App extends React.Component {
  render() {
   return (
    <div>
-    <Header />
+    <Header currentUser={this.state.currentUser} />
     {/* makes it so that it stops with the first coincidence so that exact will not be necessary */}
     <Switch>
      {/* exact: so that it doesn't catch all under it like /hats, alone is equivalent to exact="true", for example if set to false or not included it will render homepage as well as the next (HatsPage) one after the other  */}
