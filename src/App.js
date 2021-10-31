@@ -5,6 +5,7 @@ import ShopPage from './pages/shop/shop.component';
 import { Route, Switch } from 'react-router-dom';
 import Header from './components/header/header.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { onSnapshot } from 'firebase/firestore';
 
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 class App extends React.Component {
@@ -17,8 +18,23 @@ class App extends React.Component {
  }
  componentDidMount() {
   //the stageChange method returns the unsubscribe one
-  this.unsubscribeFromAuth = auth.onAuthStateChanged((user) => {
-   createUserProfileDocument(user);
+  this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+   if (userAuth) {
+    // this gets the user if it exists or creates returning the query ref
+    const userRef = await createUserProfileDocument(userAuth);
+    // the onSnapshot method is called the first time
+    // and then listens to any changes on the source
+    onSnapshot(userRef, (snapshot) => {
+     this.setState({
+      currentUser: {
+       id: userRef.id,
+       ...snapshot.data(),
+      },
+     });
+    });
+   } else {
+    this.setState({ currentUser: userAuth });
+   }
   });
  }
  componentWillUnmount() {
