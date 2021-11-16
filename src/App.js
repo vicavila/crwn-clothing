@@ -6,17 +6,14 @@ import { Route, Switch } from 'react-router-dom';
 import Header from './components/header/header.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { onSnapshot } from 'firebase/firestore';
+import { connect } from 'react-redux';
+import { setCurrentUser } from './redux/user/user.actions';
 
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 class App extends React.Component {
  unsubscribeFromAuth = null;
- constructor() {
-  super();
-  this.state = {
-   currentUser: null,
-  };
- }
  componentDidMount() {
+  const { setCurrentUser } = this.props;
   //the stageChange method returns the unsubscribe one
   this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
    if (userAuth) {
@@ -25,16 +22,13 @@ class App extends React.Component {
     // the onSnapshot method is called the first time
     // and then listens to any changes on the source
     onSnapshot(userRef, (snapshot) => {
-     this.setState({
-      currentUser: {
-       id: userRef.id,
-       ...snapshot.data(),
-      },
+     setCurrentUser({
+      id: userRef.id,
+      ...snapshot.data(),
      });
-     console.log(this.state);
     });
    } else {
-    this.setState({ currentUser: userAuth });
+    setCurrentUser(userAuth);
    }
   });
  }
@@ -44,7 +38,7 @@ class App extends React.Component {
  render() {
   return (
    <div>
-    <Header currentUser={this.state.currentUser} />
+    <Header />
     {/* makes it so that it stops with the first coincidence so that exact will not be necessary */}
     <Switch>
      {/* exact: so that it doesn't catch all under it like /hats, alone is equivalent to exact="true", for example if set to false or not included it will render homepage as well as the next (HatsPage) one after the other  */}
@@ -58,4 +52,12 @@ class App extends React.Component {
  }
 }
 
-export default App;
+// this should return an object with the props that dispatches the action
+// we want to pass, on this case setCurrentUser imported above
+const mapDispatchToProps = (dispatch) => ({
+ setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+});
+
+// here the first prop is mapStateToProps, but as
+// the app doesn't need any prop from the store it's null
+export default connect(null, mapDispatchToProps)(App);
