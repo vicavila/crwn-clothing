@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Header from './components/header/header.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { onSnapshot } from 'firebase/firestore';
@@ -45,12 +45,22 @@ class App extends React.Component {
      {/* one caveat with route is that we only can access history, match, etc, from the first component that gets passed into our route, in this case HomePage, we could pass those as props down to the components needed through props but we'll end up with prop drilling where some intermediate components which don't need the history will have to include it just to pass it down, to solve it we can implement withRouter only on the component in which it's needed */}
      <Route exact path="/" component={HomePage} />
      <Route path="/shop" component={ShopPage} />
-     <Route path="/signin" component={SignInAndSignUpPage} />
+     <Route
+      exact
+      path="/signin"
+      render={() =>
+       this.props.currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />
+      }
+     />
     </Switch>
    </div>
   );
  }
 }
+
+const mapStateToProps = ({ user }) => ({
+ currentUser: user.currentUser,
+});
 
 // this should return an object with the props that dispatches the action
 // we want to pass, on this case setCurrentUser imported above
@@ -60,4 +70,4 @@ const mapDispatchToProps = (dispatch) => ({
 
 // here the first prop is mapStateToProps, but as
 // the app doesn't need any prop from the store it's null
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
