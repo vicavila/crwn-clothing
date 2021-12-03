@@ -1,13 +1,18 @@
 import React from 'react';
 import './App.css';
+
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
+import CheckoutPage from './pages/checkout/checkout.component';
+
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Header from './components/header/header.component';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { onSnapshot } from 'firebase/firestore';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { setCurrentUser } from './redux/user/user.actions';
+import { selectCurrentUser } from './redux/user/user.selectors';
 
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 class App extends React.Component {
@@ -45,6 +50,7 @@ class App extends React.Component {
      {/* one caveat with route is that we only can access history, match, etc, from the first component that gets passed into our route, in this case HomePage, we could pass those as props down to the components needed through props but we'll end up with prop drilling where some intermediate components which don't need the history will have to include it just to pass it down, to solve it we can implement withRouter only on the component in which it's needed */}
      <Route exact path="/" component={HomePage} />
      <Route path="/shop" component={ShopPage} />
+     <Route exact path="/checkout" component={CheckoutPage} />
      <Route
       exact
       path="/signin"
@@ -58,8 +64,8 @@ class App extends React.Component {
  }
 }
 
-const mapStateToProps = ({ user }) => ({
- currentUser: user.currentUser,
+const mapStateToProps = createStructuredSelector({
+ currentUser: selectCurrentUser,
 });
 
 // this should return an object with the props that dispatches the action
