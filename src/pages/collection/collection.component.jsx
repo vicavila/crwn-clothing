@@ -16,6 +16,9 @@ const CollectionPage = ({ collection }) => {
  );
 };
 
+// here we take the component props, as this component
+// is called with a url like shop/:collectionId we
+// get the id from the match object sent by Route
 const mapStateToProps = (state, ownProps) => ({
  collection: selectCollection(ownProps.match.params.collectionId)(state),
 });
