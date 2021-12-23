@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 // this is a special sintax y React for importing SVG
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 import { auth } from '../../firebase/firebase.utils';
@@ -14,7 +13,6 @@ import {
  LogoContainer,
  OptionsContainer,
  OptionLink,
- OptionDiv,
 } from './header.styles';
 
 const Header = ({ currentUser, hidden }) => (
@@ -26,7 +24,10 @@ const Header = ({ currentUser, hidden }) => (
    <OptionLink to="/shop">SHOP</OptionLink>
    <OptionLink to="/contact">CONTACT</OptionLink>
    {currentUser ? (
-    <OptionDiv onClick={() => auth.signOut()}>SIGN OUT</OptionDiv>
+    // we can also use as components with as={Component}
+    <OptionLink as="div" onClick={() => auth.signOut()}>
+     SIGN OUT
+    </OptionLink>
    ) : (
     <OptionLink to="/signin">SIGN IN</OptionLink>
    )}
