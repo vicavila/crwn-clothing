@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import MenuItem from '../menu-item/menu-item.component';
 import { connect } from 'react-redux';
 import './directory.styles.scss';
