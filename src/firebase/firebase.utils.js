@@ -1,6 +1,14 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+ getFirestore,
+ doc,
+ getDoc,
+ setDoc,
+ collection,
+ getDocs,
+ writeBatch,
+} from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -40,4 +48,17 @@ export const createUserProfileDocument = async (userAuth, addiontalData) => {
   }
  }
  return userRef;
+};
+
+export const addCollectionAndDocuments = async (
+ collectionKey,
+ objectsToAdd
+) => {
+ const collectionRef = await collection(firestore, collectionKey);
+ const batch = writeBatch(firestore);
+ objectsToAdd.forEach((obj) => {
+  const newDocRef = doc(collectionRef);
+  batch.set(newDocRef, obj);
+ });
+ return await batch.commit();
 };
